@@ -33,18 +33,18 @@ public class GroceryListController {
             dto.setAmount(1);
         }
 
-        // manuelles Mapping von amount → quantity
+
         GroceryItemDto mapped = new GroceryItemDto();
         mapped.setName(dto.getName());
         mapped.setAmount(dto.getAmount());
         mapped.setCollected(dto.isCollected());
         mapped.setId(null); // wird vom Service gesetzt
 
-        // Jetzt übergeben an den Service, der mit quantity arbeitet
+
         GroceryItemDto created = service.createGroceryItem(new GroceryItemDto(
                 null,
                 mapped.getName(),
-                mapped.getAmount(), // wird intern als quantity interpretiert
+                mapped.getAmount(),
                 mapped.isCollected()
         ));
 
@@ -52,22 +52,38 @@ public class GroceryListController {
     }
 
 
-
-    // B: Produkt aktualisieren
     @PutMapping
     public ResponseEntity<?> update(@RequestBody @Valid GroceryItemDto dto) {
         if (dto.getId() == null) {
-            return ResponseEntity
-                    .badRequest()
-                    .body("Id darf nicht null sein");
+            return ResponseEntity.badRequest().body("Id darf nicht null sein");
         }
-        if (dto.getName() == null) {
-            return ResponseEntity
-                    .badRequest()
-                    .body("Name darf nicht null sein");
+
+        if (dto.getName() != null) {
+            dto.setName(dto.getName().trim());
         }
+
+        if (dto.getName() == null || dto.getName().isBlank()) {
+            return ResponseEntity.badRequest().body("Name darf nicht leer sein");
+        }
+
+        if (dto.getAmount() == null) {
+            dto.setAmount(1);
+        }
+
+        if (dto.getCollected() == null) {
+            dto.setCollected(false);
+        }
+
+        // Neues Objekt erzeugen für Übergabe
+        GroceryItemDto mapped = new GroceryItemDto(
+                dto.getId(),
+                dto.getName(),
+                dto.getAmount(),
+                dto.getCollected()
+        );
+
         try {
-            GroceryItemDto updated = service.updateGroceryItem(dto);
+            GroceryItemDto updated = service.updateGroceryItem(mapped);
             return ResponseEntity.ok(updated);
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
@@ -75,16 +91,19 @@ public class GroceryListController {
     }
 
 
-    // C: Nur collected aktualisieren
+
+
     @PatchMapping("/{id}")
-    public ResponseEntity<GroceryItemDto> patch(@PathVariable Long id, @RequestParam boolean collected) {
+    public ResponseEntity<?> patch(@PathVariable Long id, @RequestParam boolean collected) {
         try {
             GroceryItemDto patched = service.patchGroceryItem(id, collected);
             return ResponseEntity.ok(patched);
         } catch (NoSuchElementException e) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Id existiert nicht");
         }
     }
+
+
 
     // D: Alle Produkte anzeigen
     @GetMapping
@@ -92,12 +111,11 @@ public class GroceryListController {
         return service.getGroceryItems();
     }
 
-    // E: Einzelnes Produkt anzeigen
     @GetMapping("/{id}")
     public ResponseEntity<GroceryItemDto> getOne(@PathVariable Long id) {
         Optional<GroceryItemDto> found = service.getGroceryItem(id);
         return found.map(ResponseEntity::ok)
-                .orElse(ResponseEntity.badRequest().build());
+                .orElse(ResponseEntity.notFound().build()); // <-- 404 statt 400
     }
 
     // F: Produkt löschen oder alle löschen
@@ -105,9 +123,11 @@ public class GroceryListController {
     public ResponseEntity<Void> deleteAllOrOne(@RequestParam(required = false) Long id) {
         try {
             service.deleteGroceryItem(id);
-            return ResponseEntity.noContent().build(); // 204
+            return ResponseEntity.ok().build(); // <-- statt 204
         } catch (NoSuchElementException e) {
-            return ResponseEntity.notFound().build();
+
+            return ResponseEntity.notFound().build(); // 404
         }
     }
+
 }

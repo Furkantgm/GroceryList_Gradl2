@@ -59,4 +59,8 @@ public class GroceryItemDto {
     public void setCollected(Boolean collected) {
         this.collected = collected;
     }
+
+    public Boolean getCollected() {
+        return collected;
+    }
 }

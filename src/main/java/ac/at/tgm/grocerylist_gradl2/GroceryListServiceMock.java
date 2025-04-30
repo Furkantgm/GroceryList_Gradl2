@@ -16,7 +16,8 @@ import java.util.*;
  * @version 2025-02-04
  */
 @Service
-@Scope(value = WebApplicationContext.SCOPE_SESSION, proxyMode = ScopedProxyMode.TARGET_CLASS)
+//@Scope(value = WebApplicationContext.SCOPE_SESSION, proxyMode = ScopedProxyMode.TARGET_CLASS)
+@Scope("singleton")
 public class GroceryListServiceMock implements GroceryListService {
     private final List<GroceryItemDto> list = new ArrayList<>();
     private Long counter = 0L;
