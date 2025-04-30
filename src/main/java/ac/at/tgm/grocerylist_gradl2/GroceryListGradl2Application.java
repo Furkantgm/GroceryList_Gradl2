@@ -5,7 +5,11 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-
+/**
+ * Main Klasse
+ * @author furkan
+ * @version 2025-04-30
+ */
 @SpringBootApplication
 public class GroceryListGradl2Application {
 
