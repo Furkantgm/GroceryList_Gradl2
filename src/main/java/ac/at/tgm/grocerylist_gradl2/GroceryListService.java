@@ -2,6 +2,8 @@ package ac.at.tgm.grocerylist_gradl2;
 
 
 
+import ac.at.tgm.grocerylist_gradl2.dto.GroceryItemDto;
+
 import java.util.List;
 import java.util.Optional;
 

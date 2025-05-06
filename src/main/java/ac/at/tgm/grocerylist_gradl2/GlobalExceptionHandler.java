@@ -22,7 +22,6 @@ public class GlobalExceptionHandler {
     /**
      * Behandelt Fehler, die durch ungültige Eingaben bei @Valid entstehen.
      * Gibt die Fehlermeldung des ungültigen Felds zurück (z.B. "Name darf nicht leer sein").
-     *
      * @param ex Die Exception, die vom Spring Framework bei Validierungsfehlern geworfen wird.
      * @return ResponseEntity mit HTTP 400 (Bad Request) und einer Fehlermeldung im Text.
      */

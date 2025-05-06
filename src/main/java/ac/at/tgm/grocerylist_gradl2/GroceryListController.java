@@ -1,5 +1,6 @@
 package ac.at.tgm.grocerylist_gradl2;
 
+import ac.at.tgm.grocerylist_gradl2.dto.GroceryItemDto;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -12,15 +13,6 @@ import java.util.Optional;
 
 /**
  * REST-Controller für die Verwaltung der Einkaufsliste.
- * Dieser Controller stellt Endpunkte für CRUD-Operationen bereit.
- *
- * Endpunkte:
- * - POST: Produkt erstellen
- * - PUT: Produkt aktualisieren
- * - PATCH: nur 'collected'-Feld aktualisieren
- * - GET: Produkt(e) abrufen
- * - DELETE: Produkt(e) löschen
- *
  * @author Furkan
  * @version 2025-04-30
  */
@@ -40,7 +32,7 @@ public class GroceryListController {
     }
 
     /**
-     * A: Produkt hinzufügen (POST)
+     * Produkt hinzufügen (POST)
      * Erwartet ein JSON-Objekt ohne ID. Setzt Standardwerte für amount (1) und verarbeitet collected.
      * @param dto das übermittelte Produkt (ohne ID)
      * @return das neu erstellte Produkt mit gesetzter ID und HTTP 201
@@ -60,7 +52,7 @@ public class GroceryListController {
         mapped.setName(dto.getName());
         mapped.setAmount(dto.getAmount());
         mapped.setCollected(dto.isCollected());
-        mapped.setId(null); // ID wird im Service vergeben
+        mapped.setId(null); // ID wird in Service Klasse vergeben
 
         GroceryItemDto created = service.createGroceryItem(new GroceryItemDto(
                 null,
@@ -73,7 +65,6 @@ public class GroceryListController {
     }
 
     /**
-     * B: Produkt aktualisieren (PUT)
      * Erwartet ein vollständiges Produkt mit gesetzter ID. Setzt Standardwerte und überprüft Name.
      * @param dto das zu aktualisierende Produkt
      * @return das aktualisierte Produkt oder 404, falls nicht gefunden
@@ -116,7 +107,6 @@ public class GroceryListController {
     }
 
     /**
-     * C: Nur das Feld 'collected' aktualisieren (PATCH)
      * @param id Produkt-ID
      * @param collected neuer Wert für das Feld
      * @return aktualisiertes Produkt oder 404 mit Fehlermeldung
@@ -132,7 +122,6 @@ public class GroceryListController {
     }
 
     /**
-     * D: Alle Produkte abrufen (GET)
      * @return Liste aller Produkte
      */
     @GetMapping
@@ -141,7 +130,6 @@ public class GroceryListController {
     }
 
     /**
-     * E: Einzelnes Produkt abrufen (GET /{id})
      * Gibt 404 zurück, wenn Produkt nicht existiert.
      * @param id Produkt-ID
      * @return Produkt oder 404
@@ -154,13 +142,12 @@ public class GroceryListController {
     }
 
     /**
-     * F: Produkt löschen oder alle löschen (DELETE)
      * Wenn keine ID übergeben wird, werden alle gelöscht.
      * @param id optional, Produkt-ID
      * @return HTTP 200 oder 404, wenn ID ungültig
      */
-    @DeleteMapping
-    public ResponseEntity<Void> deleteAllOrOne(@RequestParam(required = false) Long id) {
+    @DeleteMapping({"","/{id}"})
+    public ResponseEntity<Void> deleteAllOrOne(@PathVariable(value="id",required = false) Long id) {
         try {
             service.deleteGroceryItem(id);
             return ResponseEntity.ok().build();

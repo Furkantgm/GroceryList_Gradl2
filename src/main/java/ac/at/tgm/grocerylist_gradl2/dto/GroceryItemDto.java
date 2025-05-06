@@ -1,6 +1,5 @@
-package ac.at.tgm.grocerylist_gradl2;
+package ac.at.tgm.grocerylist_gradl2.dto;
 
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
@@ -13,22 +12,12 @@ import jakarta.validation.constraints.Size;
  * @version 2025-04-30
  */
 public class GroceryItemDto {
-
-    // Eindeutige Produkt-ID (kann null sein beim Erstellen)
     private Long id;
-
-    // Name des Produkts – darf nicht leer sein und max. 255 Zeichen lang
     @NotBlank(message = "Name darf nicht leer sein")
     @Size(max = 255, message = "name größe muss zwischen 0 und 255 sein")
     private String name;
-
-    // Anzahl (optional), kein Mindestwert notwendig, da Standardwert im Controller gesetzt wird
     private Integer amount;
-
-    // Gibt an, ob das Produkt bereits gekauft / gesammelt wurde
     private Boolean collected;
-
-
     public GroceryItemDto() {
     }
 
@@ -46,8 +35,6 @@ public class GroceryItemDto {
         this.amount = amount;
         this.collected = collected;
     }
-
-    // Getter & Setter für alle Felder:
 
     public Long getId() {
         return id;

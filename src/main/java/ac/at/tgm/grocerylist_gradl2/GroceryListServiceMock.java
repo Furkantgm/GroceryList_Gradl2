@@ -1,11 +1,10 @@
 package ac.at.tgm.grocerylist_gradl2;
 
 
+import ac.at.tgm.grocerylist_gradl2.dto.GroceryItemDto;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.Scope;
-import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Service;
-import org.springframework.web.context.WebApplicationContext;
 
 import java.util.*;
 
@@ -16,7 +15,7 @@ import java.util.*;
  * @version 2025-02-04
  */
 @Service
-//@Scope(value = WebApplicationContext.SCOPE_SESSION, proxyMode = ScopedProxyMode.TARGET_CLASS)
+@Profile("test")
 @Scope("singleton")
 public class GroceryListServiceMock implements GroceryListService {
     private final List<GroceryItemDto> list = new ArrayList<>();
